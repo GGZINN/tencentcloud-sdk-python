@@ -20,8 +20,9 @@
   color-scheme: light;
 }
 
+/* escuro pelo sistema, a não ser que o tema claro tenha sido escolhido */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --fundo: oklch(0.18 0.006 260);
     --superficie: oklch(0.22 0.007 260);
     --linha: oklch(0.3 0.008 260);
@@ -35,6 +36,21 @@
     --erro: oklch(0.72 0.15 25);
     color-scheme: dark;
   }
+}
+
+:root[data-theme="dark"] {
+  --fundo: oklch(0.18 0.006 260);
+  --superficie: oklch(0.22 0.007 260);
+  --linha: oklch(0.3 0.008 260);
+  --texto: oklch(0.94 0.004 260);
+  --texto-2: oklch(0.72 0.01 260);
+  --acento: oklch(0.74 0.14 48);
+  --acento-suave: oklch(0.74 0.14 48 / 0.14);
+  --acento-texto: oklch(0.78 0.13 50);
+  --aviso: oklch(0.82 0.12 85);
+  --aviso-suave: oklch(0.82 0.12 85 / 0.12);
+  --erro: oklch(0.72 0.15 25);
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -79,7 +95,9 @@ select {
 
 /* impressão: sempre claro, sem fundo, cabe numa folha A4 */
 @media print {
-  :root {
+  :root,
+  :root:not([data-theme="light"]),
+  :root[data-theme="dark"] {
     --fundo: white;
     --superficie: white;
     --linha: oklch(0.85 0.004 250);

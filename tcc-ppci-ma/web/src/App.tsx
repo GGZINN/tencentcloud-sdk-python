@@ -29,6 +29,9 @@ const ICONE_CATEGORIA = {
   "Detecção e combate": FireExtinguisher,
 } as Record<string, typeof Buildings>;
 
+// versão publicada como Artifact: lá não há impressão nem URL com parâmetros
+const EMBUTIDO = import.meta.env.VITE_ARTIFACT === "1";
+
 const GRUPOS = [...new Set(ocupacoes.map((o) => o.grupo))];
 
 function numero(v: string) {
@@ -87,6 +90,7 @@ export default function App() {
   }, [resumo]);
 
   useEffect(() => {
+    if (EMBUTIDO) return;
     const url = paraUrl(entrada);
     if (url !== window.location.search) history.replaceState(null, "", url);
   }, [entrada]);
@@ -228,7 +232,7 @@ export default function App() {
               <PainelResultado
                 res={exibido.res}
                 acoes={
-                  <div className="flex gap-2 print:hidden">
+                  !EMBUTIDO && <div className="flex gap-2 print:hidden">
                     <button type="button" onClick={copiarLink} className={estiloBotao}>
                       {copia === "ok" ? <Check size={16} /> : <LinkSimple size={16} />}
                       {copia === "ok"
