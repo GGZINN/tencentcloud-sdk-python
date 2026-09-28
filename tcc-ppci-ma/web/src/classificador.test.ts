@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
+import casos from "../../dados/casos_teste.json";
 import { agruparMedidas, classificar, lerCsv, riscoPorCarga, tipoPorAltura } from "./classificador";
 
-// mesmos casos de ../test_classificador.py
 describe("tipoPorAltura", () => {
   it.each([
     [0, 1, "I"], [3, 1, "I"], [6, 3, "II"], [6.01, 3, "III"],
@@ -20,34 +20,20 @@ it.each([[300, "Baixo"], [301, "Médio"], [1200, "Médio"], [1500, "Alto"]] as c
   (c, r) => expect(riscoPorCarga(c)).toBe(r),
 );
 
-it("residencial pequeno é simplificado", () => {
-  const r = classificar("A-2", 600, 9, 4);
-  expect(r.simplificada).toBe(true);
-  expect(r.medidas).toContain("Extintores");
-  expect(r.medidas).not.toContain("Hidrantes e mangotinhos");
-});
-
-it("residencial alto", () => {
-  const r = classificar("A-2", 4800, 28, 10);
-  expect(r.tipo).toBe("V");
-  expect(r.medidas).toContain("Alarme de incêndio");
-  expect(r.medidas).toContain("Compartimentação vertical");
-});
-
-it("residencial médio sem alarme", () => {
-  const r = classificar("A-2", 2000, 15, 6);
-  expect(r.tipo).toBe("IV");
-  expect(r.medidas).not.toContain("Alarme de incêndio");
-});
-
-it("grupo sem regras gera aviso", () => {
-  const r = classificar("D-1", 2000, 20);
-  expect(r.medidas).toEqual([]);
-  expect(r.avisos.length).toBeGreaterThan(0);
-});
-
-it("carga informada muda o risco", () => {
-  expect(classificar("C-2", 500, 4, 2, 1300).risco).toBe("Alto");
+// casos compartilhados com a versão em Python (../test_classificador.py)
+describe("casos compartilhados", () => {
+  it.each(casos.map((c) => [c.nome, c] as const))("%s", (_, c) => {
+    const r = classificar(c.divisao, c.area, c.altura, c.pavimentos, c.carga);
+    expect(r.tipo).toBe(c.tipo);
+    expect(r.risco).toBe(c.risco);
+    expect(r.simplificada).toBe(c.simplificada);
+    for (const m of c.contem) expect(r.medidas).toContain(m);
+    for (const m of c.nao_contem) expect(r.medidas).not.toContain(m);
+    if (c.sem_medidas) {
+      expect(r.medidas).toEqual([]);
+      expect(r.avisos.length).toBeGreaterThan(0);
+    }
+  });
 });
 
 it("lê campo com vírgula entre aspas", () => {

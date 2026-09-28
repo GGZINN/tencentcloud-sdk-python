@@ -13,6 +13,7 @@
   --texto-2: oklch(0.47 0.012 260);
   --acento: oklch(0.55 0.16 38);
   --acento-suave: oklch(0.55 0.16 38 / 0.1);
+  --acento-texto: oklch(0.49 0.15 38);
   --aviso: oklch(0.52 0.12 75);
   --aviso-suave: oklch(0.8 0.12 85 / 0.18);
   --erro: oklch(0.52 0.19 25);
@@ -28,6 +29,7 @@
     --texto-2: oklch(0.72 0.01 260);
     --acento: oklch(0.74 0.14 48);
     --acento-suave: oklch(0.74 0.14 48 / 0.14);
+    --acento-texto: oklch(0.78 0.13 50);
     --aviso: oklch(0.82 0.12 85);
     --aviso-suave: oklch(0.82 0.12 85 / 0.12);
     --erro: oklch(0.72 0.15 25);
@@ -45,6 +47,7 @@
   --color-texto-2: var(--texto-2);
   --color-acento: var(--acento);
   --color-acento-suave: var(--acento-suave);
+  --color-acento-texto: var(--acento-texto);
   --color-aviso: var(--aviso);
   --color-aviso-suave: var(--aviso-suave);
   --color-erro: var(--erro);
@@ -57,8 +60,21 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-input[type="number"] {
+input,
+select {
   font-variant-numeric: tabular-nums;
+  caret-color: var(--acento);
+}
+
+::selection {
+  background: var(--acento-suave);
+  color: var(--texto);
+}
+
+/* foco do teclado: contorno cheio, separado da borda de erro */
+:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

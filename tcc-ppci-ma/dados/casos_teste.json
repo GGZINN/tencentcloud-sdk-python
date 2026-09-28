@@ -1,0 +1,17 @@
+[
+  {"nome": "residencial pequeno é simplificado", "divisao": "A-2", "area": 600, "altura": 9, "pavimentos": 4,
+   "tipo": "III", "risco": "Baixo", "simplificada": true,
+   "contem": ["Extintores", "Saídas de emergência"], "nao_contem": ["Hidrantes e mangotinhos"]},
+  {"nome": "residencial alto", "divisao": "A-2", "area": 4800, "altura": 28, "pavimentos": 10,
+   "tipo": "V", "risco": "Baixo", "simplificada": false,
+   "contem": ["Alarme de incêndio", "Compartimentação vertical"], "nao_contem": []},
+  {"nome": "residencial médio sem alarme", "divisao": "A-2", "area": 2000, "altura": 15, "pavimentos": 6,
+   "tipo": "IV", "risco": "Baixo", "simplificada": false,
+   "contem": ["Hidrantes e mangotinhos"], "nao_contem": ["Alarme de incêndio"]},
+  {"nome": "grupo sem regras", "divisao": "D-1", "area": 2000, "altura": 20,
+   "tipo": "IV", "risco": "Médio", "simplificada": false,
+   "contem": [], "nao_contem": [], "sem_medidas": true},
+  {"nome": "carga informada muda o risco", "divisao": "C-2", "area": 500, "altura": 4, "pavimentos": 2, "carga": 1300,
+   "tipo": "II", "risco": "Alto", "simplificada": true,
+   "contem": [], "nao_contem": []}
+]

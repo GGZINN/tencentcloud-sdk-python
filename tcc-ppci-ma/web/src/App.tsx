@@ -1,4 +1,4 @@
-import { useId, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useId, useMemo, useState, type ReactNode } from "react";
 import {
   ArrowUpRight,
   Buildings,
@@ -7,6 +7,7 @@ import {
   Info,
   ListChecks,
   Warning,
+  WarningCircle,
 } from "@phosphor-icons/react";
 import {
   ALTURA_MAX_SIMPLIFICADA,
@@ -59,18 +60,32 @@ export default function App() {
       )
     : null;
 
+  const resumo = res
+    ? `Tipo ${res.tipo}, risco ${res.risco.toLowerCase()}, ${
+        res.medidas.length === 1 ? "1 medida exigida" : `${res.medidas.length} medidas exigidas`
+      }.`
+    : "Há campos com erro.";
+  const [anuncio, setAnuncio] = useState("");
+  useEffect(() => {
+    const t = setTimeout(() => setAnuncio(resumo), 700);
+    return () => clearTimeout(t);
+  }, [resumo]);
+
   return (
     <div className="min-h-[100dvh] flex flex-col">
       <header className="border-b border-linha">
         <div className="mx-auto max-w-6xl px-4 h-16 flex items-center justify-between gap-4">
           <p className="font-semibold tracking-tight">
-            PPCI-MA <span className="font-normal text-texto-2">Classificador de edificações</span>
+            PPCI-MA{" "}
+            <span className="hidden sm:inline font-normal text-texto-2">
+              Classificador de edificações
+            </span>
           </p>
           <a
             href="https://cbm.ssp.ma.gov.br/unidades-bm/unidades-administrativas/dat/legislacao-tecnica-dat/"
             target="_blank"
             rel="noreferrer"
-            className="hidden sm:inline-flex items-center gap-1 text-sm text-texto-2 hover:text-texto transition-colors"
+            className="inline-flex items-center gap-1 py-3 text-sm text-texto-2 hover:text-texto transition-colors"
           >
             Normas do CBMMA <ArrowUpRight size={14} />
           </a>
@@ -89,9 +104,9 @@ export default function App() {
 
           <form className="mt-8 grid gap-5" onSubmit={(e) => e.preventDefault()}>
             <Campo rotulo="Ocupação / uso" ajuda="Divisão conforme a tabela de classificação.">
-              {(id) => (
+              {(props) => (
                 <select
-                  id={id}
+                  {...props}
                   value={divisao}
                   onChange={(e) => setDivisao(e.target.value)}
                   className={estiloInput}
@@ -112,8 +127,8 @@ export default function App() {
             </Campo>
 
             <Campo rotulo="Área construída (m²)" erro={erros.area}>
-              {(id, desc) => (
-                <input id={id} aria-describedby={desc} inputMode="decimal" value={area}
+              {(props) => (
+                <input {...props} inputMode="decimal" value={area}
                   onChange={(e) => setArea(e.target.value)} className={estiloInput} />
               )}
             </Campo>
@@ -121,14 +136,14 @@ export default function App() {
             <div className="grid grid-cols-2 gap-4">
               <Campo rotulo="Altura (m)" erro={erros.altura}
                 ajuda="Do piso de descarga ao piso do último pavimento.">
-                {(id, desc) => (
-                  <input id={id} aria-describedby={desc} inputMode="decimal" value={altura}
+                {(props) => (
+                  <input {...props} inputMode="decimal" value={altura}
                     onChange={(e) => setAltura(e.target.value)} className={estiloInput} />
                 )}
               </Campo>
               <Campo rotulo="Pavimentos" erro={erros.pavimentos}>
-                {(id, desc) => (
-                  <input id={id} aria-describedby={desc} inputMode="numeric" value={pavimentos}
+                {(props) => (
+                  <input {...props} inputMode="numeric" value={pavimentos}
                     onChange={(e) => setPavimentos(e.target.value)} className={estiloInput} />
                 )}
               </Campo>
@@ -151,8 +166,8 @@ export default function App() {
 
             {cargaManual && (
               <Campo rotulo="Carga de incêndio (MJ/m²)" erro={erros.carga}>
-                {(id, desc) => (
-                  <input id={id} aria-describedby={desc} inputMode="decimal" value={carga}
+                {(props) => (
+                  <input {...props} inputMode="decimal" value={carga}
                     onChange={(e) => setCarga(e.target.value)} className={estiloInput} />
                 )}
               </Campo>
@@ -160,8 +175,9 @@ export default function App() {
           </form>
         </section>
 
-        <section aria-labelledby="titulo-res" aria-live="polite" className="min-w-0">
+        <section aria-labelledby="titulo-res" className="min-w-0">
           <h2 id="titulo-res" className="sr-only">Resultado</h2>
+          <p className="sr-only" aria-live="polite">{anuncio}</p>
           {!res ? (
             <div className="rounded-lg border border-dashed border-linha p-8 text-texto-2 flex gap-3">
               <Info size={20} className="shrink-0 mt-0.5" />
@@ -186,8 +202,14 @@ export default function App() {
 
 const estiloInput =
   "w-full h-11 rounded-lg border border-linha bg-superficie px-3 text-texto " +
-  "outline-none transition-colors hover:border-texto-2/50 " +
-  "focus-visible:border-acento focus-visible:ring-3 focus-visible:ring-acento-suave";
+  "transition-colors hover:border-texto-2/50 " +
+  "focus-visible:border-acento aria-invalid:border-erro aria-invalid:focus-visible:border-erro";
+
+type PropsCampo = {
+  id: string;
+  "aria-describedby": string;
+  "aria-invalid": boolean;
+};
 
 function Campo({
   rotulo,
@@ -198,7 +220,7 @@ function Campo({
   rotulo: string;
   ajuda?: string;
   erro?: string;
-  children: (id: string, descricao: string) => ReactNode;
+  children: (props: PropsCampo) => ReactNode;
 }) {
   const id = useId();
   const desc = `${id}-desc`;
@@ -207,9 +229,12 @@ function Campo({
       <label htmlFor={id} className="text-sm font-medium">
         {rotulo}
       </label>
-      <div className={erro ? "*:border-erro" : ""}>{children(id, desc)}</div>
+      {children({ id, "aria-describedby": desc, "aria-invalid": !!erro })}
       {erro ? (
-        <p id={desc} className="text-sm text-erro">{erro}</p>
+        <p id={desc} className="flex gap-1.5 text-sm text-erro">
+          <WarningCircle size={16} weight="bold" className="shrink-0 mt-0.5" />
+          {erro}
+        </p>
       ) : ajuda ? (
         <p id={desc} className="text-sm text-texto-2">{ajuda}</p>
       ) : null}
@@ -223,7 +248,7 @@ function Resultado({ res }: { res: ReturnType<typeof classificar> }) {
 
   return (
     <div>
-      <p className="font-mono text-sm text-acento">{res.divisao}</p>
+      <p className="font-mono text-sm text-acento-texto">{res.divisao}</p>
       <p className="mt-1 text-2xl font-semibold tracking-tight">{res.descricao}</p>
 
       <dl className="mt-8 grid grid-cols-2 md:grid-cols-[1fr_1fr_1.4fr] gap-x-8 gap-y-6">
@@ -320,7 +345,7 @@ function EscalaAltura({ atual }: { atual: string }) {
                   : "border-linha text-texto-2")
               }
             >
-              <span className={"font-mono text-sm " + (ativo ? "text-acento font-medium" : "")}>
+              <span className={"font-mono text-sm " + (ativo ? "text-acento-texto font-medium" : "")}>
                 {f.tipo}
               </span>
               <span className="block text-xs leading-tight mt-0.5">{f.faixa}</span>

@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 import pytest
 
 from classificador import classificar, risco_por_carga, tipo_por_altura
@@ -29,34 +32,20 @@ def test_risco(carga, esperado):
     assert risco_por_carga(carga) == esperado
 
 
-def test_residencial_pequeno_eh_simplificado():
-    res = classificar("A-2", area=600, altura=9, pavimentos=4)
-    assert res.simplificada
-    assert "Extintores" in res.medidas
-    assert "Hidrantes e mangotinhos" not in res.medidas
+# casos compartilhados com a versão web (web/src/classificador.test.ts)
+CASOS = json.loads((Path(__file__).parent / "dados" / "casos_teste.json").read_text(encoding="utf-8"))
 
 
-def test_residencial_alto():
-    res = classificar("A-2", area=4800, altura=28, pavimentos=10)
-    assert not res.simplificada
-    assert res.tipo == "V"
-    assert "Alarme de incêndio" in res.medidas
-    assert "Compartimentação vertical" in res.medidas
-
-
-def test_residencial_medio_sem_alarme():
-    res = classificar("A-2", area=2000, altura=15, pavimentos=6)
-    assert res.tipo == "IV"
-    assert "Alarme de incêndio" not in res.medidas
-    assert "Hidrantes e mangotinhos" in res.medidas
-
-
-def test_grupo_sem_regras_avisa():
-    res = classificar("D-1", area=2000, altura=20)
-    assert res.medidas == []
-    assert res.avisos
-
-
-def test_carga_informada_muda_risco():
-    res = classificar("C-2", area=500, altura=4, pavimentos=2, carga_incendio=1300)
-    assert res.risco == "Alto"
+@pytest.mark.parametrize("caso", CASOS, ids=[c["nome"] for c in CASOS])
+def test_casos_compartilhados(caso):
+    res = classificar(caso["divisao"], caso["area"], caso["altura"],
+                      caso.get("pavimentos"), caso.get("carga"))
+    assert res.tipo == caso["tipo"]
+    assert res.risco == caso["risco"]
+    assert res.simplificada == caso["simplificada"]
+    for m in caso["contem"]:
+        assert m in res.medidas
+    for m in caso["nao_contem"]:
+        assert m not in res.medidas
+    if caso.get("sem_medidas"):
+        assert res.medidas == [] and res.avisos
