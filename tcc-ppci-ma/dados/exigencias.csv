@@ -1,0 +1,12 @@
+grupo,medida,tipos,obs
+A,Acesso de viatura na edificação,I;II;III;IV;V;VI,
+A,Segurança estrutural contra incêndio,I;II;III;IV;V;VI,
+A,Compartimentação vertical,V;VI,
+A,Controle de materiais de acabamento,IV;V;VI,
+A,Saídas de emergência,I;II;III;IV;V;VI,
+A,Brigada de incêndio,I;II;III;IV;V;VI,
+A,Iluminação de emergência,I;II;III;IV;V;VI,
+A,Alarme de incêndio,V;VI,
+A,Sinalização de emergência,I;II;III;IV;V;VI,
+A,Extintores,I;II;III;IV;V;VI,
+A,Hidrantes e mangotinhos,I;II;III;IV;V;VI,
