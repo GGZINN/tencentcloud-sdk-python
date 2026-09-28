@@ -1,0 +1,70 @@
+@import "@fontsource/geist-sans/400.css";
+@import "@fontsource/geist-sans/500.css";
+@import "@fontsource/geist-sans/600.css";
+@import "@fontsource/geist-mono/400.css";
+@import "@fontsource/geist-mono/500.css";
+@import "tailwindcss";
+
+:root {
+  --fundo: oklch(0.985 0.002 250);
+  --superficie: oklch(1 0 0 / 0.7);
+  --linha: oklch(0.9 0.004 250);
+  --texto: oklch(0.22 0.01 260);
+  --texto-2: oklch(0.47 0.012 260);
+  --acento: oklch(0.55 0.16 38);
+  --acento-suave: oklch(0.55 0.16 38 / 0.1);
+  --aviso: oklch(0.52 0.12 75);
+  --aviso-suave: oklch(0.8 0.12 85 / 0.18);
+  --erro: oklch(0.52 0.19 25);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo: oklch(0.18 0.006 260);
+    --superficie: oklch(0.22 0.007 260);
+    --linha: oklch(0.3 0.008 260);
+    --texto: oklch(0.94 0.004 260);
+    --texto-2: oklch(0.72 0.01 260);
+    --acento: oklch(0.74 0.14 48);
+    --acento-suave: oklch(0.74 0.14 48 / 0.14);
+    --aviso: oklch(0.82 0.12 85);
+    --aviso-suave: oklch(0.82 0.12 85 / 0.12);
+    --erro: oklch(0.72 0.15 25);
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --font-sans: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+  --color-fundo: var(--fundo);
+  --color-superficie: var(--superficie);
+  --color-linha: var(--linha);
+  --color-texto: var(--texto);
+  --color-texto-2: var(--texto-2);
+  --color-acento: var(--acento);
+  --color-acento-suave: var(--acento-suave);
+  --color-aviso: var(--aviso);
+  --color-aviso-suave: var(--aviso-suave);
+  --color-erro: var(--erro);
+}
+
+body {
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+input[type="number"] {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+  }
+}

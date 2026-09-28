@@ -22,6 +22,24 @@ Testes:
 pytest
 ```
 
+## Versão web
+
+A pasta `web/` tem a mesma ferramenta como site (React + Vite + Tailwind).
+Ela lê os mesmos CSVs de `dados/`, então cadastrar uma regra vale para as duas
+versões. A lógica está em `web/src/classificador.ts`, copiada do
+`classificador.py`: se mudar uma, mude a outra (os testes das duas usam os
+mesmos casos).
+
+```
+cd web
+npm install
+npm run dev      # abre em http://localhost:5173
+npm test
+npm run build    # gera web/dist, dá para publicar no GitHub Pages
+```
+
+Prints em `web/prints/`.
+
 ## Estrutura
 
 - `classificador.py` - regras de classificação (tipo por altura, risco, simplificada) e busca das medidas
