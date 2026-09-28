@@ -38,6 +38,11 @@ npm test
 npm run build    # gera web/dist, dá para publicar no GitHub Pages
 ```
 
+O endereço da página guarda os dados digitados (ex.:
+`?ocupacao=A-2&area=4800&altura=28&pavimentos=10`), então dá para mandar o link
+com o caso já preenchido. O botão "Imprimir" gera uma folha A4 com os dados
+informados e o resultado (exemplo em `web/prints/exemplo-impressao.pdf`).
+
 Prints em `web/prints/`.
 
 ## Estrutura

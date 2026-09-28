@@ -77,6 +77,31 @@ select {
   outline-offset: 2px;
 }
 
+/* impressão: sempre claro, sem fundo, cabe numa folha A4 */
+@media print {
+  :root {
+    --fundo: white;
+    --superficie: white;
+    --linha: oklch(0.85 0.004 250);
+    --texto: oklch(0.2 0.01 260);
+    --texto-2: oklch(0.42 0.012 260);
+    --acento: oklch(0.5 0.16 38);
+    --acento-suave: oklch(0.55 0.16 38 / 0.1);
+    --acento-texto: oklch(0.45 0.15 38);
+    --aviso: oklch(0.45 0.12 75);
+    --aviso-suave: oklch(0.8 0.12 85 / 0.25);
+    color-scheme: light;
+  }
+  @page {
+    size: A4;
+    margin: 16mm;
+  }
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
